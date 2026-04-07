@@ -13,3 +13,5 @@ To add a custom rule, you can add a new yaml file to the rules directory and use
       message: "Custom failure message."
 
 Alternatively, you can also copy the executable file and /rules directory to your preferred locations, then make a shell script in your git hook location name "commit" or "pre-commit" (Or whatever hook type you're using.), and call the executable file from that script. Be sure to give it the argument "$1" for it's first argument and the absolute path to the /rules directory location as the second argument.
+
+A basic Conventional Commits ruleset is supplied by default to get started.
