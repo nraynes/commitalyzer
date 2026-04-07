@@ -1,0 +1,12 @@
+[package]
+name = "commitalyzer"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+indexmap = "2.13.1"
+regex = "1.12.3"
+rust-yaml = "0.0.5"
+
+[profile.release]
+panic = "abort"
