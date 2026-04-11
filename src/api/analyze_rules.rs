@@ -41,41 +41,46 @@ pub fn analyze_rules(commit: &str, rules: &IndexMap<Value, Value>) -> Result<(),
             Some(v) => v,
             _ => return Err(String::from("Failed to parse rule name")),
         };
-        let rule_options = match rule
-            .1
-            .as_mapping() {
-                Some(v) => v,
-                _ => return Err(String::from("Failed to parse rule")),
-            };
-        let rule_pattern_raw = match rule_options 
-            .get_index(0) {
-                Some(v) => v,
-                _ => return Err(format!(
-                "Could not parse rule pattern for rule {}",
-                rule_name
-            )),
-            };
-        let rule_pattern = match rule_pattern_raw.1
-            .as_str() {
-                Some(v) => v,
-                _ => return Err(format!(
-                "Could not extract rule pattern for rule {}",
-                rule_name
-            )),
-            };
-        let rule_message_raw = match rule_options
-            .get_index(1) {
-                Some(v) => v,
-                _ => return Err(format!("Could not parse rule message for rule {}", rule_name)),
-            };
-        let rule_message = match rule_message_raw.1
-            .as_str() {
-                Some(v) => v,
-                _ => return Err(format!(
+        let rule_options = match rule.1.as_mapping() {
+            Some(v) => v,
+            _ => return Err(String::from("Failed to parse rule")),
+        };
+        let rule_pattern_raw = match rule_options.get_index(0) {
+            Some(v) => v,
+            _ => {
+                return Err(format!(
+                    "Could not parse rule pattern for rule {}",
+                    rule_name
+                ));
+            }
+        };
+        let rule_pattern = match rule_pattern_raw.1.as_str() {
+            Some(v) => v,
+            _ => {
+                return Err(format!(
+                    "Could not extract rule pattern for rule {}",
+                    rule_name
+                ));
+            }
+        };
+        let rule_message_raw = match rule_options.get_index(1) {
+            Some(v) => v,
+            _ => {
+                return Err(format!(
+                    "Could not parse rule message for rule {}",
+                    rule_name
+                ));
+            }
+        };
+        let rule_message = match rule_message_raw.1.as_str() {
+            Some(v) => v,
+            _ => {
+                return Err(format!(
                     "Could not extract rule message for rule {}",
                     rule_name
-                )),
-            };
+                ));
+            }
+        };
         let enforcement_result = check(commit, rule_pattern)?;
         if !enforcement_result {
             return Err(format!(

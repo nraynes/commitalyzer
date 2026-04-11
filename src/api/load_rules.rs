@@ -16,19 +16,25 @@ pub fn load_rules(path: &str) -> Result<IndexMap<Value, Value>, String> {
         let dir_entry = match fp {
             Ok(v) => v,
             Err(_) => {
-                return Err(String::from("There was a problem while reading directory contents"));
+                return Err(String::from(
+                    "There was a problem while reading directory contents",
+                ));
             }
         };
         let file_path = match dir_entry.path().to_str() {
             Some(v) => String::from(v),
-            _ => return Err(String::from("Failed to convert file path to string while reading directory contents")),
+            _ => {
+                return Err(String::from(
+                    "Failed to convert file path to string while reading directory contents",
+                ));
+            }
         };
         let ruleset = load_ruleset(file_path)?;
         let rules = match ruleset.as_mapping() {
             Some(v) => v,
             _ => return Err(String::from("Failed to parse ruleset.")),
         };
-            
+
         map.extend(rules.clone());
     }
     Ok(map)
