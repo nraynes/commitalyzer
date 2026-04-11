@@ -1,11 +1,14 @@
 use regex::Regex;
 
-pub fn check<'a>(commit: &'a str, pattern: &str) -> bool {
-    let re = Regex::new(pattern).expect(&format!("Cannot instantiate regex pattern {}", pattern));
+pub fn check<'a>(commit: &'a str, pattern: &str) -> Result<bool, String> {
+    let re = match Regex::new(pattern) {
+        Ok(v) => v,
+        Err(_) => return Err(format!("Cannot instantiate regex pattern {}", pattern)),
+    };
     if re.is_match(commit) {
-        return true;
+        return Ok(true);
     }
-    false
+    Ok(false)
 }
 
 #[cfg(test)]

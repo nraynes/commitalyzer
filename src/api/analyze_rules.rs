@@ -4,9 +4,9 @@ use rust_yaml::Value;
 
 /// Analyzes a commit message against a set of rules.
 /// Panics if a rule fails.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// # use indexmap::IndexMap;
 /// # use rust_yaml::Value;
@@ -16,12 +16,12 @@ use rust_yaml::Value;
 /// # rule_one.insert(Value::from("message"), Value::from("Error message that displays if this rule fails."));
 /// # rules.insert(Value::from("rule-one"), Value::from(rule_one));
 /// let commit_msg = "feat(scope): subject header";
-/// 
+///
 /// commitalyzer::analyze_rules(commit_msg, &rules);
 /// ```
-/// 
+///
 /// # Panics
-/// 
+///
 /// ```should_panic
 /// # use indexmap::IndexMap;
 /// # use rust_yaml::Value;
@@ -31,45 +31,59 @@ use rust_yaml::Value;
 /// # rule_one.insert(Value::from("message"), Value::from("Error message that displays if this rule fails."));
 /// # rules.insert(Value::from("rule-one"), Value::from(rule_one));
 /// let commit_msg = "notvalid(scope): subject header";
-/// 
+///
 /// commitalyzer::analyze_rules(commit_msg, &rules);
 /// ```
-pub fn analyze_rules(commit: &str, rules: &IndexMap<Value, Value>) {
+pub fn analyze_rules(commit: &str, rules: &IndexMap<Value, Value>) -> Result<(), String> {
     for rule in rules {
-        let rule_name = rule.0.as_str().expect("Failed to parse rule name");
-        let rule_options = rule
+        let rule_name = match rule.0.as_str() {
+            Some(v) => v,
+            _ => return Err(String::from("Failed to parse rule name")),
+        };
+        let rule_options = match rule
             .1
-            .as_mapping()
-            .expect(&format!("Failed to parse rule {}", rule_name));
-        let rule_pattern = rule_options
-            .get_index(0)
-            .expect(&format!(
+            .as_mapping() {
+                Some(v) => v,
+                _ => return Err(String::from("Failed to parse rule")),
+            };
+        let rule_pattern_raw = match rule_options 
+            .get_index(0) {
+                Some(v) => v,
+                _ => return Err(format!(
                 "Could not parse rule pattern for rule {}",
                 rule_name
-            ))
-            .1
-            .as_str()
-            .expect(&format!(
+            )),
+            };
+        let rule_pattern = match rule_pattern_raw.1
+            .as_str() {
+                Some(v) => v,
+                _ => return Err(format!(
                 "Could not extract rule pattern for rule {}",
                 rule_name
-            ));
-        let rule_message = rule_options
-            .get_index(1)
-            .expect(&format!(
-                "Could not parse rule message for rule {}",
-                rule_name
-            ))
-            .1
-            .as_str()
-            .expect(&format!(
-                "Could not extract rule message for rule {}",
-                rule_name
-            ));
-        let enforcement_result = check(commit, rule_pattern);
+            )),
+            };
+        let rule_message_raw = match rule_options
+            .get_index(1) {
+                Some(v) => v,
+                _ => return Err(format!("Could not parse rule message for rule {}", rule_name)),
+            };
+        let rule_message = match rule_message_raw.1
+            .as_str() {
+                Some(v) => v,
+                _ => return Err(format!(
+                    "Could not extract rule message for rule {}",
+                    rule_name
+                )),
+            };
+        let enforcement_result = check(commit, rule_pattern)?;
         if !enforcement_result {
-            panic!("Rule {} failed with message: {}\n\n", rule_name, rule_message);
+            return Err(format!(
+                "Rule {} failed with message: {}\n\n",
+                rule_name, rule_message
+            ));
         }
     }
+    Ok(())
 }
 
 #[cfg(test)]

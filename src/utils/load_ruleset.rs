@@ -1,13 +1,17 @@
 use rust_yaml::{Value, Yaml};
 use std::{fs, path::Path};
 
-pub fn load_ruleset(path: &str) -> Value {
-    let file_path = Path::new(path);
+pub fn load_ruleset(path: String) -> Result<Value, String> {
+    let file_path = Path::new(&path);
     let yaml = Yaml::new();
-    let ruleset_file =
-        fs::read_to_string(file_path).expect(&format!("Failed to read ruleset at {}", path));
-    yaml.load_str(&ruleset_file)
-        .expect("Failed to parse yaml file")
+    let ruleset_file = match fs::read_to_string(file_path) {
+        Ok(v) => v,
+        Err(_) => return Err(String::from("Failed to read yaml file.")),
+    };
+    match yaml.load_str(&ruleset_file) {
+        Ok(v) => Ok(v),
+        Err(_) => Err(String::from("Failed to parse yaml file contents.")),
+    }
 }
 
 #[cfg(test)]
@@ -24,7 +28,7 @@ mod tests {
             current_dir().unwrap().to_str().unwrap(),
             get_path(vec!["/", "test", "test-ruleset-one.yml"], OS)
         );
-        let ruleset_raw = load_ruleset(&ruleset_path);
+        let ruleset_raw = load_ruleset(&ruleset_path).unwrap();
         let ruleset = ruleset_raw.as_mapping().unwrap();
 
         // Extract rules from ruleset and assert their value.

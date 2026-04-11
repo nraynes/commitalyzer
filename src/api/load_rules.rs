@@ -5,27 +5,33 @@ use std::{fs, path::Path};
 use crate::utils::load_ruleset;
 
 /// Loads the rulesets that are located in the supplied path.
-pub fn load_rules(path: &str) -> IndexMap<Value, Value> {
+pub fn load_rules(path: &str) -> Result<IndexMap<Value, Value>, String> {
     let dir_path = Path::new(path);
     let mut map = IndexMap::new();
-    for fp in
-        fs::read_dir(dir_path).expect(&format!("Failed to read directory contents at {}", path))
-    {
-        let dir_entry = fp.expect(&format!(
-            "There was a problem while reading directory contents at {}",
-            path
-        ));
-        let file_path = dir_entry.path();
-        let ruleset = load_ruleset(file_path.to_str().expect(&format!(
-            "Failed to convert file path to string while reading directory contents at {}",
-            path
-        )));
-        let rules = ruleset
-            .as_mapping()
-            .expect("Failed to parse rules from ruleset");
+    let dir_list = match fs::read_dir(dir_path) {
+        Ok(v) => v,
+        Err(_) => return Err(String::from("Failed to read directory contents.")),
+    };
+    for fp in dir_list {
+        let dir_entry = match fp {
+            Ok(v) => v,
+            Err(_) => {
+                return Err(String::from("There was a problem while reading directory contents"));
+            }
+        };
+        let file_path = match dir_entry.path().to_str() {
+            Some(v) => String::from(v),
+            _ => return Err(String::from("Failed to convert file path to string while reading directory contents")),
+        };
+        let ruleset = load_ruleset(file_path)?;
+        let rules = match ruleset.as_mapping() {
+            Some(v) => v,
+            _ => return Err(String::from("Failed to parse ruleset.")),
+        };
+            
         map.extend(rules.clone());
     }
-    map
+    Ok(map)
 }
 
 #[cfg(test)]

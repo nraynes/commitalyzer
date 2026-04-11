@@ -5,28 +5,29 @@ use crate::utils::get_path;
 /// Parses the arguments supplied to the command line and returns the
 /// commit message and path to the directory containing all the rulesets
 /// to use for analyzing.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// let mut args: Vec<String> = std::env::args().collect();
 /// # args.push("feat(scope): subject header".to_string());
-/// 
+///
 /// let (commit, path_to_rulesets) = commitalyzer::parse_args(&mut args).unwrap();
 /// ```
 pub fn parse_args(args: &mut Vec<String>) -> Result<(&str, &str), &str> {
     if args.len() < 2 {
         return Err("Must include commit message in arguments.");
     } else if args.len() == 2 {
-        let wd = current_dir().expect("Failed to retrieve working directory");
-        args.push(get_path(
-            vec![
-                wd.to_str()
-                    .expect("Failed to convert working directory to string."),
-                "rules",
-            ],
-            OS,
-        ));
+        let wd_raw = match current_dir() {
+            Ok(v) => v,
+            Err(_) => return Err("Could not read working directory."),
+        };
+        let wd_result = wd_raw.to_str();
+        let wd = match wd_result {
+            Some(v) => v,
+            _ => return Err("Failed to convert working directory to String type."),
+        };
+        args.push(get_path(vec![wd, "rules"], OS));
     }
     Ok((&args[1], &args[2]))
 }
