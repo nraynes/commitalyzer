@@ -47,7 +47,7 @@ mod tests {
             current_dir().unwrap().to_str().unwrap(),
             get_path(vec!["/", "test"], OS)
         );
-        let ruleset = load_rules(&rules_dir_path);
+        let ruleset = load_rules(&rules_dir_path).unwrap();
 
         // Extract rules from ruleset and assert their value.
         let rule_one_name = ruleset.get_index(1).unwrap().0.as_str().unwrap();
@@ -89,9 +89,9 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "Failed to read directory contents at /not/a/real/path")]
+    #[should_panic(expected = "Failed to read directory contents.")]
     fn test_load_rules_invalid_path() {
         let rules_dir_path = "/not/a/real/path";
-        load_rules(&rules_dir_path);
+        load_rules(&rules_dir_path).unwrap();
     }
 }

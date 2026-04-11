@@ -22,7 +22,7 @@ use rust_yaml::Value;
 ///
 /// # Panics
 ///
-/// ```should_panic
+/// ```
 /// # use indexmap::IndexMap;
 /// # use rust_yaml::Value;
 /// # let mut rules = IndexMap::new();
@@ -32,7 +32,8 @@ use rust_yaml::Value;
 /// # rules.insert(Value::from("rule-one"), Value::from(rule_one));
 /// let commit_msg = "notvalid(scope): subject header";
 ///
-/// commitalyzer::analyze_rules(commit_msg, &rules);
+/// let result = commitalyzer::analyze_rules(commit_msg, &rules);
+/// assert_eq!(result, Err(String::from("Rule rule-one failed with message: Error message that displays if this rule fails.\n\n")))
 /// ```
 pub fn analyze_rules(commit: &str, rules: &IndexMap<Value, Value>) -> Result<(), String> {
     for rule in rules {
@@ -100,10 +101,10 @@ mod tests {
             current_dir().unwrap().to_str().unwrap(),
             get_path(vec!["/", "test", "test-ruleset-two.yml"], OS)
         );
-        let ruleset_raw = load_ruleset(&ruleset_path);
+        let ruleset_raw = load_ruleset(ruleset_path).unwrap();
         let ruleset = ruleset_raw.as_mapping().unwrap();
         let commit = "testultimatetestultimate";
-        analyze_rules(commit, ruleset);
+        analyze_rules(commit, ruleset).unwrap();
     }
 
     #[test]
@@ -114,9 +115,9 @@ mod tests {
             current_dir().unwrap().to_str().unwrap(),
             get_path(vec!["/", "test", "test-ruleset-two.yml"], OS)
         );
-        let ruleset_raw = load_ruleset(&ruleset_path);
+        let ruleset_raw = load_ruleset(ruleset_path).unwrap();
         let ruleset = ruleset_raw.as_mapping().unwrap();
         let commit = "this_should_not_match";
-        analyze_rules(commit, ruleset);
+        analyze_rules(commit, ruleset).unwrap();
     }
 }

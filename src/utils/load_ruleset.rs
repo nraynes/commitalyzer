@@ -28,7 +28,7 @@ mod tests {
             current_dir().unwrap().to_str().unwrap(),
             get_path(vec!["/", "test", "test-ruleset-one.yml"], OS)
         );
-        let ruleset_raw = load_ruleset(&ruleset_path).unwrap();
+        let ruleset_raw = load_ruleset(ruleset_path).unwrap();
         let ruleset = ruleset_raw.as_mapping().unwrap();
 
         // Extract rules from ruleset and assert their value.
@@ -59,9 +59,9 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "Failed to read ruleset at /not/a/real/path")]
+    #[should_panic(expected = "Failed to read yaml file.")]
     fn test_load_ruleset_invalid_path() {
         let ruleset_path = "/not/a/real/path";
-        load_ruleset(&ruleset_path);
+        load_ruleset(String::from(ruleset_path)).unwrap();
     }
 }

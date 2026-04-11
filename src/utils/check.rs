@@ -19,7 +19,7 @@ mod tests {
     fn test_check_pattern_match() {
         let message = "apples";
         let pattern = "^a(p|f){1,2}(les)?$";
-        let result = check(message, pattern);
+        let result = check(message, pattern).unwrap();
         assert_eq!(result, true);
     }
 
@@ -27,7 +27,7 @@ mod tests {
     fn test_check_pattern_not_match() {
         let message = "oranges";
         let pattern = "^a(p|f){1,2}(les)?$";
-        let result = check(message, pattern);
+        let result = check(message, pattern).unwrap();
         assert_eq!(result, false);
     }
 }
