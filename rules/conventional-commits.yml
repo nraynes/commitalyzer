@@ -15,5 +15,5 @@ commit-header-subject:
   message: "Commit subject not valid. Only lowercase letters, digits, dash, and underscore are allowed."
 
 commit-body-footer-syntax:
-  pattern: "^.+(\n\n.+)?(\n\n.+)?$"
+  pattern: "^.+(\n\n.+)?(\n\n.+)?\n*$"
   message: "Commit body/footer not valid. Body and footer must be separated by double line breaks."
