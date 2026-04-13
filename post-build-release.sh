@@ -16,7 +16,7 @@ if [ -f "./bin/commit-msg" ]; then
 fi
 
 # If file was updated, copy the release binary to the ./bin folder and rename it to "commit-msg"
-if [ $contin == true ]; then
+if $contin; then
     echo "Updating the release binary in root since binary has been modified since last release"
     cp ./target/release/commitalyzer ./bin/commit-msg
 fi
