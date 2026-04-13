@@ -27,7 +27,7 @@ pub fn parse_args(args: &mut Vec<String>) -> Result<(&str, &str), &str> {
             Some(v) => v,
             _ => return Err("Failed to convert working directory to String type."),
         };
-        args.push(get_path(vec![wd, "rules"], OS));
+        args.push(get_path(vec![wd, "commit-rules"], OS));
     }
     Ok((&args[1], &args[2]))
 }
@@ -59,7 +59,7 @@ mod tests {
                     vec![
                         wd.to_str()
                             .expect("Failed to convert working directory to string."),
-                        "rules"
+                        "commit-rules"
                     ],
                     OS
                 )[..]
