@@ -1,6 +1,6 @@
 [package]
 name = "commitalyzer"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Nicholas Raynes"]
 description = "A very simple commit linter. Customizable via custom rule files."
 license  = "MIT"
