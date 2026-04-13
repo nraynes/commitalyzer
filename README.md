@@ -6,7 +6,8 @@ for software projects. This tool requires no dependencies to work as it is a sin
 
 ## Installation
 
-To install, just copy the binary file named "commit-msg" in the ./bin directory into your git hook folder (Default is "<project_root>/.git/hooks"), then also copy the ./commit-rules directory to the root of your project.
+To install, just copy the binary file named "commit-msg" from the ./bin directory into your git hook folder (Default is "<project_root>/.git/hooks"), then also copy the ./commit-rules directory to the root of your project.    
+*If you don't need the source code, you can also just download the latest release from the Github repository, which is just the binary hook file and the conventional commits default ruleset if you need it.*
 
 Alternatively, you can also copy the executable file and /commit-rules directory to your preferred locations, then make a shell script in your git hook location named "commit-msg", and call the executable file from that script. Be sure to give it the argument "$1" for it's first argument and the absolute path to the /commit-rules directory location as the second argument.
 
