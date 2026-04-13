@@ -1,12 +1,15 @@
 [package]
 name = "commitalyzer"
 version = "0.1.0"
+authors = ["Nicholas Raynes"]
+description = "A very simple commit linter. Customizable via custom rule files."
+license  = "MIT"
 edition = "2024"
+repository = "https://github.com/nraynes/commitalyzer"
+keywords = ["commit", "lint", "analyze", "project", "tools"]
+categories = ["command-line-utilities", "development-tools"]
 
 [dependencies]
 indexmap = "2.13.1"
 regex = "1.12.3"
 rust-yaml = "0.0.5"
-
-[profile.release]
-panic = "abort"
