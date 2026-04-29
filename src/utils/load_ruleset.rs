@@ -26,7 +26,7 @@ mod tests {
         let ruleset_path = format!(
             "{}{}",
             current_dir().unwrap().to_str().unwrap(),
-            get_path(vec!["/", "test", "test-ruleset-one.yml"], OS)
+            get_path(vec!["/", "test-rules", "test-ruleset-one.yml"], OS)
         );
         let ruleset_raw = load_ruleset(ruleset_path).unwrap();
         let ruleset = ruleset_raw.as_mapping().unwrap();

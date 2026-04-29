@@ -1,6 +1,6 @@
 use regex::Regex;
 
-pub fn check<'a>(commit: &'a str, pattern: &str) -> Result<bool, String> {
+pub fn check(commit: &str, pattern: &str) -> Result<bool, String> {
     let re = match Regex::new(pattern) {
         Ok(v) => v,
         Err(_) => return Err(format!("Cannot instantiate regex pattern {}", pattern)),

@@ -51,7 +51,7 @@ mod tests {
         let rules_dir_path = format!(
             "{}{}",
             current_dir().unwrap().to_str().unwrap(),
-            get_path(vec!["/", "test"], OS)
+            get_path(vec!["/", "test-rules"], OS)
         );
         let ruleset = load_rules(&rules_dir_path).unwrap();
 

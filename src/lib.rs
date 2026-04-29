@@ -5,6 +5,6 @@
 //! hook that calls the binary and supplies it with the commit message as the first
 //! argument, and a path to the directory containing the rulesets to use for comparison.
 mod api;
-mod utils;
+pub mod utils;
 
 pub use crate::api::{analyze_rules, load_rules, parse_args};

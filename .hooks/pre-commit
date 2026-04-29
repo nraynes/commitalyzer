@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Pull changes first.
+git pull
+
+# Function to check if an element is present in an array.
+has_element() {
+    local e
+    for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
+    return 1
+}
+
+# Get the current diff from git
+diff_pre=($(git diff --name-only))
+
+# Format files
+cargo fmt
+
+# Generate documentation
+cargo doc
+
+# Run tests
+cargo test
+
+# Run release build for multiple targets
+targets=(
+    "linux x86_64-unknown-linux-gnu x86_64-unknown-linux-gnu-gcc commitalyzer"
+    "arm-macos aarch64-apple-darwin gcc commitalyzer"
+    "intel-macos x86_64-apple-darwin gcc commitalyzer"
+    "windows x86_64-pc-windows-gnu x86_64-w64-mingw32-gcc commitalyzer.exe"
+)
+
+for tl in "${targets[@]}"; do
+    osname="$(echo "$tl" | cut -d ' ' -f 1)"
+    targetos="$(echo "$tl" | cut -d ' ' -f 2)"
+    targetlinker="$(which "$(echo "$tl" | cut -d ' ' -f 3)")"
+    binname="$(echo "$tl" | cut -d ' ' -f 4)"
+    echo "Running release build for $osname"
+    cargo build --release --target $targetos --config "target.$targetos.linker = '$targetlinker'"
+    if [ ! -d "bin/$osname" ]; then
+        mkdir "bin/$osname"
+    fi
+    cp target/$targetos/release/$binname bin/$osname/commit-msg
+done
+
+# Get the diff from git after formatting
+diff_post=($(git diff --name-only))
+
+# Check if any files were changed and add them to the current commit
+for val in "${diff_post[@]}"; do
+    if ! has_element "$val" "${diff_pre[@]}"; then
+        git add "$val"
+    fi
+done
