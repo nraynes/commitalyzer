@@ -36,3 +36,4 @@ A basic Conventional Commits ruleset is supplied by default to get started.
 ## Building a New Release Binary
 
 After running "cargo build --release" to build a new release binary, run the ./post-build-release.sh script from the projects root directory. This script will copy the generated release binary to the ./bin directory within the projects root directory and rename it to "commit-msg". This is to make it easier for someone to just grab that binary to put in their hooks directory without having to perform the steps of finding it in the target directory and then renaming it. If using Windows, just copy the file manually from ./target/release/commitalyzer into ./bin and rename the file from "commitalyzer" to "commit-msg".
+
