@@ -17,6 +17,16 @@ mod succeeds {
     }
 
     #[test]
+    fn no_scope_newline_end() {
+        test_commit(
+            "feat: this is a test commit\n",
+            vec!["/", "commit-rules", "conventional-commits.yml"],
+            true,
+            RULE_NAME,
+        );
+    }
+
+    #[test]
     fn with_scope() {
         test_commit(
             "feat(somescope): this is a test commit",

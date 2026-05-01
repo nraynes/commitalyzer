@@ -19,6 +19,32 @@ mod succeeds {
     }
 
     #[test]
+    fn no_scope_with_body_newline_end() {
+        test_commit(
+            "feat: this is a test commit
+
+            This is the body of the commit.\n",
+            vec!["/", "commit-rules", "conventional-commits.yml"],
+            true,
+            RULE_NAME,
+        );
+    }
+
+    #[test]
+    fn no_scope_with_body_with_footer_newline_end() {
+        test_commit(
+            "feat: this is a test commit
+
+            This is the body of the commit.
+
+            This is the footer.\n",
+            vec!["/", "commit-rules", "conventional-commits.yml"],
+            true,
+            RULE_NAME,
+        );
+    }
+
+    #[test]
     fn with_scope_with_body() {
         test_commit(
             "feat(somescope): this is a test commit

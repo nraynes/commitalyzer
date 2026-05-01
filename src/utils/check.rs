@@ -2,8 +2,6 @@ use regex::Regex;
 use semver_common::Alert;
 
 pub fn check(commit: &str, pattern: &str, err_message: &str) -> Result<(), Alert> {
-    println!("COMMIT");
-    println!("{}", commit);
     let re = Regex::new(pattern)?;
     if re.find(commit) == None {
         return Err(Alert::from(err_message));
