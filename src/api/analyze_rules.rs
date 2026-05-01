@@ -1,6 +1,7 @@
 use crate::utils::check;
 use indexmap::IndexMap;
 use rust_yaml::Value;
+use semver_common::Alert;
 
 /// Analyzes a commit message against a set of rules.
 /// Panics if a rule fails.
@@ -25,6 +26,7 @@ use rust_yaml::Value;
 /// ```
 /// # use indexmap::IndexMap;
 /// # use rust_yaml::Value;
+/// # use semver_common::Alert;
 /// # let mut rules = IndexMap::new();
 /// # let mut rule_one = IndexMap::new();
 /// # rule_one.insert(Value::from("pattern"), Value::from("^feat(\n|.)*$"));
@@ -33,61 +35,31 @@ use rust_yaml::Value;
 /// let commit_msg = "notvalid(scope): subject header";
 ///
 /// let result = commitalyzer::analyze_rules(commit_msg, &rules);
-/// assert_eq!(result, Err(String::from("Rule rule-one failed with message: Error message that displays if this rule fails.\n\n")))
+/// assert_eq!(result, Err(Alert::from("Error message that displays if this rule fails.")))
 /// ```
-pub fn analyze_rules(commit: &str, rules: &IndexMap<Value, Value>) -> Result<(), String> {
-    for rule in rules {
-        let rule_name = match rule.0.as_str() {
-            Some(v) => v,
-            _ => return Err(String::from("Failed to parse rule name")),
-        };
-        let rule_options = match rule.1.as_mapping() {
-            Some(v) => v,
-            _ => return Err(String::from("Failed to parse rule")),
-        };
-        let rule_pattern_raw = match rule_options.get_index(0) {
-            Some(v) => v,
-            _ => {
-                return Err(format!(
-                    "Could not parse rule pattern for rule {}",
-                    rule_name
-                ));
-            }
-        };
-        let rule_pattern = match rule_pattern_raw.1.as_str() {
-            Some(v) => v,
-            _ => {
-                return Err(format!(
-                    "Could not extract rule pattern for rule {}",
-                    rule_name
-                ));
-            }
-        };
-        let rule_message_raw = match rule_options.get_index(1) {
-            Some(v) => v,
-            _ => {
-                return Err(format!(
-                    "Could not parse rule message for rule {}",
-                    rule_name
-                ));
-            }
-        };
-        let rule_message = match rule_message_raw.1.as_str() {
-            Some(v) => v,
-            _ => {
-                return Err(format!(
-                    "Could not extract rule message for rule {}",
-                    rule_name
-                ));
-            }
-        };
-        let enforcement_result = check(commit, rule_pattern)?;
-        if !enforcement_result {
-            return Err(format!(
-                "Rule {} failed with message: {}\n\n",
-                rule_name, rule_message
-            ));
-        }
+pub fn analyze_rules(commit: &str, rules: &IndexMap<Value, Value>) -> Result<(), Alert> {
+    for (rule, options) in rules {
+        let rule_name = rule
+            .as_str()
+            .ok_or("Could not extract rule name from yaml")?;
+        let rule_options = options.as_mapping().ok_or("Failed to parse rule")?;
+        let (_, pattern_value) = rule_options.get_index(0).ok_or(format!(
+            "Could not parse rule pattern for rule {}",
+            rule_name
+        ))?;
+        let rule_pattern = pattern_value.as_str().ok_or(format!(
+            "Could not extract rule pattern for rule {}",
+            rule_name
+        ))?;
+        let (_, message_value) = rule_options.get_index(1).ok_or(format!(
+            "Could not parse rule message for rule {}",
+            rule_name
+        ))?;
+        let rule_message = message_value.as_str().ok_or(format!(
+            "Could not extract rule message for rule {}",
+            rule_name
+        ))?;
+        check(commit, rule_pattern, &rule_message)?;
     }
     Ok(())
 }

@@ -1,1 +1,5 @@
-pub mod commit_header;
+pub mod commit_body_footer_syntax;
+pub mod commit_header_commit_type;
+pub mod commit_header_scope;
+pub mod commit_header_subject;
+pub mod commit_header_syntax;

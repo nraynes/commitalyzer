@@ -2,9 +2,10 @@ use commitalyzer::{
     analyze_rules,
     utils::{get_path, load_ruleset},
 };
+use rust_yaml::Value;
 use std::env::{consts::OS, current_dir};
 
-pub fn test_commit(commit: &str, ruleset_path: Vec<&str>, should_pass: bool) {
+pub fn test_commit(commit: &str, ruleset_path: Vec<&str>, should_pass: bool, rule_name: &str) {
     let ruleset_path = format!(
         "{}{}",
         current_dir().unwrap().to_str().unwrap(),
@@ -12,9 +13,30 @@ pub fn test_commit(commit: &str, ruleset_path: Vec<&str>, should_pass: bool) {
     );
     let ruleset_raw = load_ruleset(ruleset_path).unwrap();
     let ruleset = ruleset_raw.as_mapping().unwrap();
+    let rule_being_tested = ruleset
+        .get(&Value::from(rule_name))
+        .ok_or(format!("No rule named {}", rule_name))
+        .unwrap();
+    let err_message = rule_being_tested
+        .get(&Value::from("message"))
+        .ok_or(format!("No 'message' field in rule {}", rule_name))
+        .unwrap();
     let result = analyze_rules(commit, ruleset);
+    println!("{}", commit);
     match should_pass {
-        true => assert_eq!(result.is_ok(), true),
-        false => assert_eq!(result.is_err(), true),
+        true => assert_eq!(result.err(), None),
+        false => assert_eq!(
+            result.err().unwrap().to_string(),
+            format!(
+                "{}\n",
+                err_message
+                    .as_str()
+                    .ok_or(format!(
+                        "Could not extract error message from {} as string",
+                        rule_name
+                    ))
+                    .unwrap()
+            )
+        ),
     };
 }

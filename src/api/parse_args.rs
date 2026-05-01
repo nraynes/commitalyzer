@@ -1,5 +1,7 @@
 use std::env::{consts::OS, current_dir};
 
+use semver_common::Alert;
+
 use crate::utils::get_path;
 
 /// Parses the arguments supplied to the command line and returns the
@@ -14,20 +16,15 @@ use crate::utils::get_path;
 ///
 /// let (commit, path_to_rulesets) = commitalyzer::parse_args(&mut args).unwrap();
 /// ```
-pub fn parse_args(args: &mut Vec<String>) -> Result<(&str, &str), &str> {
+pub fn parse_args(args: &mut Vec<String>) -> Result<(&str, &str), Alert> {
     if args.len() < 2 {
-        return Err("Must include commit message in arguments.");
+        return Err(Alert::from("Must include commit message in arguments."));
     } else if args.len() == 2 {
-        let wd_raw = match current_dir() {
-            Ok(v) => v,
-            Err(_) => return Err("Could not read working directory."),
-        };
-        let wd_result = wd_raw.to_str();
-        let wd = match wd_result {
-            Some(v) => v,
-            _ => return Err("Failed to convert working directory to String type."),
-        };
-        args.push(get_path(vec![wd, "commit-rules"], OS));
+        let path_buf = current_dir()?;
+        let working_dir = path_buf
+            .to_str()
+            .ok_or("Could not extract working directory")?;
+        args.push(get_path(vec![working_dir, "commit-rules"], OS));
     }
     Ok((&args[1], &args[2]))
 }
@@ -40,7 +37,7 @@ mod tests {
     fn test_parse_args_no_args() {
         let mut args = vec![String::from("/script/path")];
         let result = parse_args(&mut args);
-        assert_eq!(result, Err("Must include commit message in arguments."));
+        assert_eq!(result.is_err(), true);
     }
 
     #[test]
@@ -49,11 +46,11 @@ mod tests {
             String::from("/script/path"),
             String::from("feat(some_scope): the commit message"),
         ];
-        let result = parse_args(&mut args);
+        let result = parse_args(&mut args).unwrap();
         let wd = current_dir().expect("Failed to retrieve working directory");
         assert_eq!(
             result,
-            Ok((
+            (
                 "feat(some_scope): the commit message",
                 &get_path(
                     vec![
@@ -63,7 +60,7 @@ mod tests {
                     ],
                     OS
                 )[..]
-            ))
+            )
         );
     }
 
@@ -74,10 +71,10 @@ mod tests {
             String::from("feat(some_scope): the commit message"),
             String::from("/some/other/path"),
         ];
-        let result = parse_args(&mut args);
+        let result = parse_args(&mut args).unwrap();
         assert_eq!(
             result,
-            Ok(("feat(some_scope): the commit message", "/some/other/path"))
+            ("feat(some_scope): the commit message", "/some/other/path")
         );
     }
 }

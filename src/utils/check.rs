@@ -1,14 +1,14 @@
 use regex::Regex;
+use semver_common::Alert;
 
-pub fn check(commit: &str, pattern: &str) -> Result<bool, String> {
-    let re = match Regex::new(pattern) {
-        Ok(v) => v,
-        Err(_) => return Err(format!("Cannot instantiate regex pattern {}", pattern)),
-    };
-    if re.is_match(commit) {
-        return Ok(true);
+pub fn check(commit: &str, pattern: &str, err_message: &str) -> Result<(), Alert> {
+    println!("COMMIT");
+    println!("{}", commit);
+    let re = Regex::new(pattern)?;
+    if re.find(commit) == None {
+        return Err(Alert::from(err_message));
     }
-    Ok(false)
+    Ok(())
 }
 
 #[cfg(test)]
@@ -19,15 +19,15 @@ mod tests {
     fn test_check_pattern_match() {
         let message = "apples";
         let pattern = "^a(p|f){1,2}(les)?$";
-        let result = check(message, pattern).unwrap();
-        assert_eq!(result, true);
+        let result = check(message, pattern, "");
+        assert_eq!(result.is_ok(), true);
     }
 
     #[test]
     fn test_check_pattern_not_match() {
         let message = "oranges";
         let pattern = "^a(p|f){1,2}(les)?$";
-        let result = check(message, pattern).unwrap();
-        assert_eq!(result, false);
+        let result = check(message, pattern, "");
+        assert_eq!(result.is_err(), true);
     }
 }

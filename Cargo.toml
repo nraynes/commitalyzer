@@ -10,6 +10,7 @@ keywords = ["commit", "lint", "analyze", "project", "tools"]
 categories = ["command-line-utilities", "development-tools"]
 
 [dependencies]
-indexmap = "2.13.1"
+indexmap = "2.14.0"
 regex = "1.12.3"
 rust-yaml = "0.0.5"
+semver-common = "0.8.0"
