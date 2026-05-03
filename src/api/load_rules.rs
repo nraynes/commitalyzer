@@ -1,14 +1,13 @@
 use indexmap::IndexMap;
 use rust_yaml::Value;
-use std::{fs, path::Path};
+use std::{fs, path::PathBuf};
 
 use crate::utils::load_ruleset;
 
 /// Loads the rulesets that are located in the supplied path.
-pub fn load_rules(path: &str) -> Result<IndexMap<Value, Value>, String> {
-    let dir_path = Path::new(path);
+pub fn load_rules(path: PathBuf) -> Result<IndexMap<Value, Value>, String> {
     let mut map = IndexMap::new();
-    let dir_list = match fs::read_dir(dir_path) {
+    let dir_list = match fs::read_dir(path) {
         Ok(v) => v,
         Err(_) => return Err(String::from("Failed to read directory contents.")),
     };
@@ -21,14 +20,7 @@ pub fn load_rules(path: &str) -> Result<IndexMap<Value, Value>, String> {
                 ));
             }
         };
-        let file_path = match dir_entry.path().to_str() {
-            Some(v) => String::from(v),
-            _ => {
-                return Err(String::from(
-                    "Failed to convert file path to string while reading directory contents",
-                ));
-            }
-        };
+        let file_path = dir_entry.path();
         let ruleset = load_ruleset(file_path)?;
         let rules = match ruleset.as_mapping() {
             Some(v) => v,
@@ -43,17 +35,12 @@ pub fn load_rules(path: &str) -> Result<IndexMap<Value, Value>, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::utils::get_path;
-    use std::env::{consts::OS, current_dir};
+    use std::{env::current_dir, path::Path};
 
     #[test]
     fn test_load_rules_valid_path() {
-        let rules_dir_path = format!(
-            "{}{}",
-            current_dir().unwrap().to_str().unwrap(),
-            get_path(vec!["/", "test-rules"], OS)
-        );
-        let ruleset = load_rules(&rules_dir_path).unwrap();
+        let rules_dir_path = current_dir().unwrap().join(Path::new("test-rules"));
+        let ruleset = load_rules(rules_dir_path).unwrap();
 
         // Extract rules from ruleset and assert their value.
         let rule_one_name = ruleset.get_index(1).unwrap().0.as_str().unwrap();
@@ -97,7 +84,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "Failed to read directory contents.")]
     fn test_load_rules_invalid_path() {
-        let rules_dir_path = "/not/a/real/path";
-        load_rules(&rules_dir_path).unwrap();
+        let rules_dir_path = Path::new("/not/a/real/path").to_path_buf();
+        load_rules(rules_dir_path).unwrap();
     }
 }

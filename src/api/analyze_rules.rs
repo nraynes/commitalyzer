@@ -59,7 +59,7 @@ pub fn analyze_rules(commit: &str, rules: &IndexMap<Value, Value>) -> Result<(),
             "Could not extract rule message for rule {}",
             rule_name
         ))?;
-        check(commit, rule_pattern, &rule_message)?;
+        check(commit, rule_pattern, rule_message)?;
     }
     Ok(())
 }
@@ -67,17 +67,14 @@ pub fn analyze_rules(commit: &str, rules: &IndexMap<Value, Value>) -> Result<(),
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::utils::get_path;
     use crate::utils::load_ruleset;
-    use std::env::{consts::OS, current_dir};
+    use std::env::current_dir;
 
     #[test]
     fn test_analyze_rules_pass() {
-        let ruleset_path = format!(
-            "{}{}",
-            current_dir().unwrap().to_str().unwrap(),
-            get_path(vec!["/", "test-rules", "test-ruleset-two.yml"], OS)
-        );
+        let ruleset_path = current_dir()
+            .unwrap()
+            .join("test-rules/test-ruleset-two.yml");
         let ruleset_raw = load_ruleset(ruleset_path).unwrap();
         let ruleset = ruleset_raw.as_mapping().unwrap();
         let commit = "testultimatetestultimate";
@@ -87,11 +84,9 @@ mod tests {
     #[test]
     #[should_panic(expected = "")]
     fn test_analyze_rules_fail() {
-        let ruleset_path = format!(
-            "{}{}",
-            current_dir().unwrap().to_str().unwrap(),
-            get_path(vec!["/", "test-rules", "test-ruleset-two.yml"], OS)
-        );
+        let ruleset_path = current_dir()
+            .unwrap()
+            .join("test-rules/test-ruleset-two.yml");
         let ruleset_raw = load_ruleset(ruleset_path).unwrap();
         let ruleset = ruleset_raw.as_mapping().unwrap();
         let commit = "this_should_not_match";

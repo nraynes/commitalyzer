@@ -1,16 +1,9 @@
-use commitalyzer::{
-    analyze_rules,
-    utils::{get_path, load_ruleset},
-};
+use commitalyzer::{analyze_rules, utils::load_ruleset};
 use rust_yaml::Value;
-use std::env::{consts::OS, current_dir};
+use std::{env::current_dir, path::PathBuf};
 
-pub fn test_commit(commit: &str, ruleset_path: Vec<&str>, should_pass: bool, rule_name: &str) {
-    let ruleset_path = format!(
-        "{}{}",
-        current_dir().unwrap().to_str().unwrap(),
-        get_path(ruleset_path, OS)
-    );
+pub fn test_commit(commit: &str, ruleset_path: PathBuf, should_pass: bool, rule_name: &str) {
+    let ruleset_path = current_dir().unwrap().join(ruleset_path);
     let ruleset_raw = load_ruleset(ruleset_path).unwrap();
     let ruleset = ruleset_raw.as_mapping().unwrap();
     let rule_being_tested = ruleset

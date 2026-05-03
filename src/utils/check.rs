@@ -3,7 +3,7 @@ use semver_common::Alert;
 
 pub fn check(commit: &str, pattern: &str, err_message: &str) -> Result<(), Alert> {
     let re = Regex::new(pattern)?;
-    if re.find(commit) == None {
+    if re.find(commit).is_none() {
         return Err(Alert::from(err_message));
     }
     Ok(())

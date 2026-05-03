@@ -10,6 +10,7 @@ keywords = ["commit", "lint", "analyze", "project", "tools"]
 categories = ["command-line-utilities", "development-tools"]
 
 [dependencies]
+clap = { version = "4.6.1", features = ["derive"] }
 indexmap = "2.14.0"
 regex = "1.12.3"
 rust-yaml = "0.0.5"
