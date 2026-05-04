@@ -6,6 +6,6 @@ use std::fs;
 fn main() -> Result<(), Alert> {
     let args = Args::parse();
     let content = fs::read_to_string(args.commit_file)?;
-    let rules = load_rules(args.rules_file)?;
+    let rules = load_rules(args.rules_dir)?;
     analyze_rules(&content, &rules)
 }
