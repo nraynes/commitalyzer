@@ -1,6 +1,10 @@
-# Version: v0.2.0
+# Version: v0.2.3
 
-## Features
+## Patches
 
-- feat: fixing version again
+- fix: cargo publish
+
+## Maintenance Items
+
+- chore: added inclusions
 
