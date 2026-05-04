@@ -6,7 +6,7 @@ for software projects. This tool requires no dependencies to work as it is a sin
 
 ## Installation
 
-To install, just copy the binary file named "commit-msg" from the ./bin directory into your git hook folder (Default is "<project_root>/.git/hooks"), then also copy the ./commit-rules directory to the root of your project.    
+To install, just copy the binary file named "commit-msg" from the ./bin directory into your git hook folder (Default is "<project_root>/.git/hooks"), then also copy the ./commit-rules directory to the root of your project. 
 *If you don't need the source code, you can also just download the latest release from the Github repository, which is just the binary hook file and the conventional commits default ruleset if you need it.*
 
 Alternatively, you can also copy the executable file and /commit-rules directory to your preferred locations, then make a shell script in your git hook location named "commit-msg", and call the executable file from that script. Be sure to give it the argument "$1" for it's first argument and the absolute path to the /commit-rules directory location as the second argument.
@@ -29,13 +29,7 @@ To add a custom rule, you can add a new yaml file to the rules directory and use
       pattern: "^regex_pattern$"
       message: "Custom failure message."
 
-
-
 A basic Conventional Commits ruleset is supplied by default to get started.
-
-## Building a New Release Binary
-
-After running "cargo build --release" to build a new release binary, run the ./post-build-release.sh script from the projects root directory. This script will copy the generated release binary to the ./bin directory within the projects root directory and rename it to "commit-msg". This is to make it easier for someone to just grab that binary to put in their hooks directory without having to perform the steps of finding it in the target directory and then renaming it. If using Windows, just copy the file manually from ./target/release/commitalyzer into ./bin and rename the file from "commitalyzer" to "commit-msg".
 
 ## License
 
