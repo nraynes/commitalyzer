@@ -7,5 +7,6 @@ pub struct Args {
     pub commit_file: PathBuf,
 
     /// Path to the rules directory containing all the rule configurations that govern analysis.
+    #[arg(default_value = "commit-rules")]
     pub rules_dir: PathBuf,
 }

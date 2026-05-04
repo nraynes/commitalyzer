@@ -1,0 +1,7 @@
+test-rule-one:
+  pattern: "^(\n|.)*$"
+  message: "This is the first test rules error message."
+
+test-rule-two:
+  pattern: "^(\n|.)*(\n|.)*$"
+  message: "This is the second test rules error message."

@@ -4,9 +4,8 @@
 //! To install, just grab the binary and put in your preferred location. Make a git
 //! hook that calls the binary and supplies it with the commit message as the first
 //! argument, and a path to the directory containing the rulesets to use for comparison.
-mod api;
 mod args;
-pub mod utils;
+mod models;
 
-pub use api::{analyze_rules, load_rules};
 pub use args::Args;
+pub use models::{Analyzer, Rule};

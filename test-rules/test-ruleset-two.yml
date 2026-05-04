@@ -1,3 +1,0 @@
-test-rule-three:
-  pattern: "^(test|ultimate)+$"
-  message: "This is the third test rules error message."
