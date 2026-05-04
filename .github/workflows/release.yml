@@ -30,7 +30,7 @@ jobs:
         run: |
           rustup target add aarch64-apple-darwin
           sudo apt install aarch64-apple-darwin21-clang
-          cargo build --release --target aarch64-apple-darwin
+          cargo build --release --target aarch64-apple-darwin --config 'target.aarch64-apple-darwin.linker = "aarch64-apple-darwin21-clang"'
           mkdir -p ./bin/arm-macos
           cp ./target/aarch64-apple-darwin/release/commitalyzer ./bin/arm-macos/commit-msg
 
@@ -38,7 +38,7 @@ jobs:
         run: |
           rustup target add x86_64-apple-darwin
           sudo apt install x86_64-apple-darwin21-clang
-          cargo build --release --target x86_64-apple-darwin
+          cargo build --release --target x86_64-apple-darwin --config 'target.x86_64-apple-darwin.linker = "x86_64-apple-darwin21-clang"'
           mkdir -p ./bin/intel-macos
           cp ./target/x86_64-apple-darwin/release/commitalyzer ./bin/intel-macos/commit-msg
 
@@ -46,7 +46,7 @@ jobs:
         run: |
           rustup target add x86_64-pc-windows-gnu
           sudo apt install mingw-w64
-          cargo build --release --target x86_64-pc-windows-gnu
+          cargo build --release --target x86_64-pc-windows-gnu --config 'target.x86_64-pc-windows-gnu.linker = "x86_64-w64-mingw32-gcc"'
           mkdir -p ./bin/windows
           cp ./target/x86_64-pc-windows-gnu/release/commitalyzer.exe ./bin/windows/commit-msg
 
