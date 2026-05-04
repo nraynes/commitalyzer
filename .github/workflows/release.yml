@@ -29,6 +29,7 @@ jobs:
       - name: Build Arm MacOS Release
         run: |
           rustup target add aarch64-apple-darwin
+          sudo apt install aarch64-apple-darwin21-clang
           cargo build --release --target aarch64-apple-darwin
           mkdir -p ./bin/arm-macos
           cp ./target/aarch64-apple-darwin/release/commitalyzer ./bin/arm-macos/commit-msg
@@ -36,6 +37,7 @@ jobs:
       - name: Build Intel MacOS Release
         run: |
           rustup target add x86_64-apple-darwin
+          sudo apt install x86_64-apple-darwin21-clang
           cargo build --release --target x86_64-apple-darwin
           mkdir -p ./bin/intel-macos
           cp ./target/x86_64-apple-darwin/release/commitalyzer ./bin/intel-macos/commit-msg
