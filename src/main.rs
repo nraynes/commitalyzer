@@ -1,11 +1,11 @@
-use commitalyzer::{analyze_rules, load_rules, parse_args};
+use clap::Parser;
+use commitalyzer::{Args, analyze_rules, load_rules};
 use semver_common::Alert;
-use std::{env, fs};
+use std::fs;
 
 fn main() -> Result<(), Alert> {
-    let mut args = env::args().collect();
-    let (commit, rules_path) = parse_args(&mut args)?;
-    let content = fs::read_to_string(commit)?;
-    let rules = load_rules(rules_path)?;
+    let args = Args::parse();
+    let content = fs::read_to_string(args.commit_file)?;
+    let rules = load_rules(args.rules_dir)?;
     analyze_rules(&content, &rules)
 }

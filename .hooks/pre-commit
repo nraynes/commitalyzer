@@ -22,27 +22,6 @@ cargo doc
 # Run tests
 cargo test
 
-# Run release build for multiple targets
-targets=(
-    "linux x86_64-unknown-linux-gnu x86_64-unknown-linux-gnu-gcc commitalyzer"
-    "arm-macos aarch64-apple-darwin gcc commitalyzer"
-    "intel-macos x86_64-apple-darwin gcc commitalyzer"
-    "windows x86_64-pc-windows-gnu x86_64-w64-mingw32-gcc commitalyzer.exe"
-)
-
-for tl in "${targets[@]}"; do
-    osname="$(echo "$tl" | cut -d ' ' -f 1)"
-    targetos="$(echo "$tl" | cut -d ' ' -f 2)"
-    targetlinker="$(which "$(echo "$tl" | cut -d ' ' -f 3)")"
-    binname="$(echo "$tl" | cut -d ' ' -f 4)"
-    echo "Running release build for $osname"
-    cargo build --release --target $targetos --config "target.$targetos.linker = '$targetlinker'"
-    if [ ! -d "bin/$osname" ]; then
-        mkdir "bin/$osname"
-    fi
-    cp target/$targetos/release/$binname bin/$osname/commit-msg
-done
-
 # Get the diff from git after formatting
 diff_post=($(git diff --name-only))
 

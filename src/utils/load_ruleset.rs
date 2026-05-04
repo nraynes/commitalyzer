@@ -1,10 +1,9 @@
 use rust_yaml::{Value, Yaml};
-use std::{fs, path::Path};
+use std::{fs, path::PathBuf};
 
-pub fn load_ruleset(path: String) -> Result<Value, String> {
-    let file_path = Path::new(&path);
+pub fn load_ruleset(path: PathBuf) -> Result<Value, String> {
     let yaml = Yaml::new();
-    let ruleset_file = match fs::read_to_string(file_path) {
+    let ruleset_file = match fs::read_to_string(path) {
         Ok(v) => v,
         Err(_) => return Err(String::from("Failed to read yaml file.")),
     };
@@ -17,17 +16,14 @@ pub fn load_ruleset(path: String) -> Result<Value, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::utils::get_path;
-    use std::env::{consts::OS, current_dir};
+    use std::{env::current_dir, path::Path};
 
     #[test]
     fn test_load_ruleset_valid_path() {
         // Load ruleset from file.
-        let ruleset_path = format!(
-            "{}{}",
-            current_dir().unwrap().to_str().unwrap(),
-            get_path(vec!["/", "test-rules", "test-ruleset-one.yml"], OS)
-        );
+        let ruleset_path = current_dir()
+            .unwrap()
+            .join("test-rules/test-ruleset-one.yml");
         let ruleset_raw = load_ruleset(ruleset_path).unwrap();
         let ruleset = ruleset_raw.as_mapping().unwrap();
 
@@ -61,7 +57,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "Failed to read yaml file.")]
     fn test_load_ruleset_invalid_path() {
-        let ruleset_path = "/not/a/real/path";
-        load_ruleset(String::from(ruleset_path)).unwrap();
+        let ruleset_path = Path::new("/not/a/real/path").to_path_buf();
+        load_ruleset(ruleset_path).unwrap();
     }
 }

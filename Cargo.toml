@@ -3,14 +3,19 @@ name = "commitalyzer"
 version = "0.2.0"
 authors = ["Nicholas Raynes"]
 description = "A very simple commit linter. Customizable via custom rule files."
-license  = "MIT"
+license  = "MIT OR Apache-2.0"
 edition = "2024"
 repository = "https://github.com/nraynes/commitalyzer"
 keywords = ["commit", "lint", "analyze", "project", "tools"]
 categories = ["command-line-utilities", "development-tools"]
 
 [dependencies]
+clap = { version = "4.6.1", features = ["derive"] }
 indexmap = "2.14.0"
 regex = "1.12.3"
 rust-yaml = "0.0.5"
 semver-common = "0.8.0"
+
+[build-dependencies]
+clap = { version = "4.6.1", features = ["derive"] }
+clap_mangen = "0.3.0"

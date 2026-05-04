@@ -36,3 +36,12 @@ A basic Conventional Commits ruleset is supplied by default to get started.
 ## Building a New Release Binary
 
 After running "cargo build --release" to build a new release binary, run the ./post-build-release.sh script from the projects root directory. This script will copy the generated release binary to the ./bin directory within the projects root directory and rename it to "commit-msg". This is to make it easier for someone to just grab that binary to put in their hooks directory without having to perform the steps of finding it in the target directory and then renaming it. If using Windows, just copy the file manually from ./target/release/commitalyzer into ./bin and rename the file from "commitalyzer" to "commit-msg".
+
+## License
+
+This work is dual-licensed under MIT and Apache 2.0.
+You can choose between one of them if you use this work.
+
+`SPDX-License-Identifier: MIT OR Apache-2.0`
+
+Some dependencies may also be licensed under Unicode-3.0, so the license text for this license is included in the LICENSES directory to comply with the terms of this license.

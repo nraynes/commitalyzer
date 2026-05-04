@@ -4,6 +4,10 @@ const RULE_NAME: &str = "commit-body-footer-syntax";
 
 #[cfg(test)]
 mod succeeds {
+    use std::path::Path;
+
+    use crate::conventional_commits::RULESET_PATH;
+
     use super::*;
 
     #[test]
@@ -12,7 +16,7 @@ mod succeeds {
             "feat: this is a test commit
 
             This is the body of the commit.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             true,
             RULE_NAME,
         );
@@ -24,7 +28,7 @@ mod succeeds {
             "feat: this is a test commit
 
             This is the body of the commit.\n",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             true,
             RULE_NAME,
         );
@@ -38,7 +42,7 @@ mod succeeds {
             This is the body of the commit.
 
             This is the footer.\n",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             true,
             RULE_NAME,
         );
@@ -50,7 +54,7 @@ mod succeeds {
             "feat(somescope): this is a test commit
 
             This is the body of the commit.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             true,
             RULE_NAME,
         );
@@ -64,7 +68,7 @@ mod succeeds {
             This is the body of the commit.
 
             This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             true,
             RULE_NAME,
         );
@@ -78,7 +82,7 @@ mod succeeds {
             This is the body of the commit.
 
             This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             true,
             RULE_NAME,
         );
@@ -92,7 +96,7 @@ mod succeeds {
             This is the body of the commit.
 
             BREAKING CHANGE: This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             true,
             RULE_NAME,
         );
@@ -106,7 +110,7 @@ mod succeeds {
             This is the body of the commit.
 
             BREAKING CHANGE: This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             true,
             RULE_NAME,
         );
@@ -118,7 +122,7 @@ mod succeeds {
             "feat: this is a test commit
 
             BREAKING CHANGE: This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             true,
             RULE_NAME,
         );
@@ -130,7 +134,7 @@ mod succeeds {
             "feat(somescope): this is a test commit
 
             BREAKING CHANGE: This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             true,
             RULE_NAME,
         );
@@ -139,6 +143,10 @@ mod succeeds {
 
 #[cfg(test)]
 mod fails {
+    use std::path::Path;
+
+    use crate::conventional_commits::RULESET_PATH;
+
     use super::*;
 
     #[test]
@@ -146,7 +154,7 @@ mod fails {
         test_commit(
             "feat: this is a test commit
             This is the body of the commit.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -158,7 +166,7 @@ mod fails {
             "feat(somescope): this is a test commit
             
             This is the body of the commit.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -171,7 +179,7 @@ mod fails {
 
 
             This is the body of the commit.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -184,7 +192,7 @@ mod fails {
             
             
             This is the body of the commit.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -197,7 +205,7 @@ mod fails {
             
             This is the body of the commit.
             This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -210,7 +218,7 @@ mod fails {
             
             This is the body of the commit.
             This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -225,7 +233,7 @@ mod fails {
             
 
             This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -240,7 +248,7 @@ mod fails {
             
 
             This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -252,7 +260,7 @@ mod fails {
             "feat: this is a test commit
             This is the body of the commit.
             This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -264,7 +272,7 @@ mod fails {
             "feat(somescope): this is a test commit
             This is the body of the commit.
             This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -280,7 +288,7 @@ mod fails {
             
 
             This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -296,7 +304,7 @@ mod fails {
             
 
             This is the footer.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -311,7 +319,7 @@ mod fails {
             
             This is the footer.
             ",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -326,7 +334,7 @@ mod fails {
             
             This is the footer.
             ",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -341,7 +349,7 @@ mod fails {
             
             This is the footer.
             something after.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
@@ -356,7 +364,7 @@ mod fails {
             
             This is the footer.
             something after.",
-            vec!["/", "commit-rules", "conventional-commits.yml"],
+            Path::new(RULESET_PATH).to_path_buf(),
             false,
             RULE_NAME,
         );
