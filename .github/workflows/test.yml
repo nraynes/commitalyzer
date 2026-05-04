@@ -18,7 +18,7 @@ jobs:
         run: cargo install cargo-audit
 
       - name: Install Dependencies
-        run: cargo build --linker gcc
+        run: cargo build
 
       - name: Run Static Analysis
         run: cargo check
